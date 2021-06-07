@@ -1,0 +1,116 @@
+/* 设置body */
+body{
+	/* 设置body的背景图片 */
+	/* 设置body的背景图片 */
+	background-image:url(Image/52112_QDi5oPZ4.jpg) ;
+	background-size:100%;/* 设置body的大小 */
+	background-repeat:no-repeat;/* 背景图像将仅显示一次 */
+}
+/* 设置第一个div */
+#login_frame{
+	width:400px;
+	height:300px;
+	padding:13px;/* 设置内边距13px */
+	z-index: 1000;
+	position:absolute;/* 生成绝对定位的元素 */
+	left:50%;
+	top:50%;
+	margin-left:-200px;
+	margin-top:-200px;
+	box-shadow: 5px 5px 10px #bfbfbf;
+	
+	background-color:rgba(136, 136, 136, 0.8);
+	
+	border-radius:10px;
+	text-align: center;
+}
+/* 选择第一个div和该div里p标签下的所有元素 */
+form p>*{
+	display:inline-block;/* 设置为行内块状元素 */
+	vertical-align: middle;/* 设置元素的垂直对齐方式,并将该元素放在父元素中部 */
+}
+/* 设置p标签中的image */
+#image_logo{
+	/* 设置外边框顶部 */
+	margin-top:22px ;
+}
+img{
+	width:80px;
+	height:80px;
+	border-radius: 50%;
+}
+/* 设置p标签中的label标签 */
+.label_input{
+	font-size:14px;
+	font-family:"微软雅黑";
+	
+	width:65px;
+	height:28px;
+	line-height: 28px;/* 设置行间的距离（行高） */
+	text-align: center;
+	
+	color:white;
+	background-color:#adadad;
+	border-top-left-radius:5px;
+	border-bottom-left-radius:5px;
+}
+/* 设置输入框 */
+.text_fiexld{
+	width:278px;
+	height:28px;
+	border-top-right-radius:5px;
+	border-bottom-right-radius:5px;
+	border: none;
+}
+/* 设置登录按钮 */
+#btn_login{
+	font-size:14px;
+	font-family:"微软雅黑";
+	
+	width:160px;
+	height:40px;
+	line-height: 28px;
+    text-align: center;
+	outline: none;
+	color:white;
+	background-color: #515151;
+	border-radius:6px;
+	border:none;
+}
+#btn_login:hover{
+	background-color:#434343 ;
+}
+#btn_login:active{
+	background-color:#363636 ;
+}
+/* 设置忘记密码连接 */
+#forget_pwd{
+	font-size: 12px;
+	color:white;
+	text-decoration: none;
+	position:relative;/* 生成相对定位的元素 */
+	float:right;
+	top:5px;
+}
+#forget_pwd:hover{
+	color:blue;
+	text-decoration: underline;/* 定义文本下的一条线。 */
+}
+/* 设置第二个div */
+#login_control{
+	padding:0 28px;
+}
+/*注册功能 */
+.regist_a{
+	font-size: 12px;
+	color:white;
+	text-decoration: none;
+	position:relative;/* 生成相对定位的元素 */
+	float:right;
+	right: 20px;
+	top:5px;
+}
+.regist_a:hover{
+	color:blue;
+	text-decoration: underline;/* 定义文本下的一条线。 */
+}

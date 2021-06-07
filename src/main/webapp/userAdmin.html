@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>用户管理</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <link rel="stylesheet" href="./css/layui/css/layui.css" media="all">
+    <link rel="stylesheet" href="./css/style/admin.css" media="all">
+    <link rel="stylesheet" href="./css/style.css" media="all">
+</head>
+<body style="width: 100%;height: 100%;" onload="userAmin_load();">
+<script type="text/javascript" src="js/jquery-1.7.1.min.js"></script>
+<script>
+    var html="";
+    var text="";
+    var userid="";
+    function userAmin_load(){
+        $.ajax({
+            url:'queryAll',
+            data:{},
+            dataType:"json",
+            success:function(resp){
+                if(resp!=null){
+                    for(var i=0;i<resp.length;i++){
+                        html+="<tr>";
+                        html+="<td>"+resp[i].id+"</td>";
+                        html+="<td>"+resp[i].name+"</td>";
+                        html+="<td>"+resp[i].sex+"</td>";
+                        html+="<td>"+resp[i].type+"</td>";
+                        html+="<td>";
+                        html+="<button class=\"layui-btn edit_btn\"><i class=\"layui-icon\">&#xe642;</i></button>";
+                        html+="<button class=\"layui-btn layui-btn-danger del_btn\" onclick=\"\"><i class=\"layui-icon\">&#xe640;</i></button>";
+                        html+="</td>"
+                        html+="</tr>";
+                    }
+                    $("#tableBody").html(html);
+                }
+            }
+        })
+
+    }
+    $(function(){
+        $("#tableBody").on("click", ".edit_btn", function(event){
+            $(".box_bg").show();
+            userid=$(this).closest("tr").find("td").eq(0).text();
+            $(".username").val($(this).closest("tr").find("td").eq(1).text());
+            $(".usersex").val($(this).closest("tr").find("td").eq(2).text());
+            $(".usertype").val($(this).closest("tr").find("td").eq(3).text());
+        });
+        $("#tableBody").on("click", ".del_btn", function(event){
+            $(".box_bg_1").show();
+            text=$(this).closest("tr").find("td").eq(0).text();
+        });
+        $(".del_btn_ok").click(function(){
+            $.ajax({
+                url:"delUser",
+                data:{
+                    "id":text,
+                },
+                dataType:"json",
+                success:function(response){
+                    $(".box_bg_1").hide();
+                    if(response==1){
+                        window.location.reload();
+                    }
+                },
+                error:function(){
+                    alert("删除失败,请重新操作");
+                },
+            });
+        });
+        $(".clear_btn").click(function(){
+            $(".box_bg").hide();
+        });
+        $(".clear_btn_1").click(function(){
+            $(".box_bg_1").hide();
+        });
+        $(".change_info_btn").click(function(){
+            $.ajax({
+                url:"updateUserInfo",
+                data:{
+                    "id":userid,
+                    "sex":$(".usersex").val(),
+                    "type":$(".usertype").val(),
+                },success:function(response){
+                    if(response==1){
+                        $(".box_bg").hide();
+                        window.location.reload();
+                    }
+                },error:function(error){
+                    alert("信息更新失败,请重新尝试");
+                }
+            });
+        });
+    });
+</script>
+
+<div class="layui-fluid">
+    <div class="layui-row layui-col-space15">
+        <div class="layui-col-md12">
+            <div class="layui-col-md12">
+                <div class="layui-col-md12">
+                    <div class="layui-card" style="z-index: 1000;height: 100%;">
+                        <div class="layui-card-body">
+                            <table id="myTable" class="layui-table" lay-size="lg">
+                                <colgroup>
+                                    <col width="150">
+                                    <col width="200">
+                                    <col>
+                                </colgroup>
+                                <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>用户名</th>
+                                    <th>性别</th>
+                                    <th>身份</th>
+                                    <th>操作</th>
+                                </tr>
+                                </thead>
+                                <tbody id="tableBody">
+                                <!-- 表格主体 -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 自定义输入弹框-->
+        <!-- 遮罩层-->
+        <div class="box_bg">
+            <!-- 显示框-->
+            <div class="hint_box">
+                <p style="margin-top: 30px;"><!-- <input class="username_input" type="text"/> -->
+                    <input type="text" style="cursor: no-drop;" disabled="disabled" name="title" placeholder="请输入用户名" autocomplete="off" class="layui-input username">
+                </p>
+                <p><!-- <input class="sex_input" type="text"/> -->
+                    <input type="text" name="title" placeholder="请输入性别" autocomplete="off" class="layui-input usersex">
+                </p>
+                <p><!-- <input class="sex_input" type="text"/> -->
+                    <input type="text" name="title" placeholder="请输入性别" autocomplete="off" class="layui-input usertype">
+                </p>
+                <p><button class="btn_public change_info_btn">确定</button><button class="btn_public clear_btn">取消</button></p>
+            </div>
+        </div>
+        <!-- 删除按钮弹框-->
+        <div class="box_bg_1">
+            <div class="hint_box_1">
+                <p><h3 align="center" style="font-family: '微软雅黑'; font-size: 18px;">确定删除吗?</h3></p>
+                <p><button class="btn_public del_btn_ok">确定</button><button class="btn_public clear_btn_1">取消</button></p>
+            </div>
+        </div>
+        <script src="./css/layui/layui.js"></script>
+        <script>
+            layui.config({
+                base: './css/' //静态资源所在路径
+            }).extend({
+                index: 'lib/index' //主入口模块
+            }).use(['index']);
+        </script>
+</body>
+</html>
+

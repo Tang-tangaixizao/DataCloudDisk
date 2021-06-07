@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>目录文件管理</title>
+	<meta name="renderer" content="webkit">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+	<link rel="stylesheet" href="./css/layui/css/layui.css" media="all">
+	<link rel="stylesheet" href="./css/style/admin.css" media="all">
+	<link rel="stylesheet" href="./css/style.css" media="all">
+</head>
+<body onload="page_load(parent.name);">
+<div class="layui-fluid" style="margin: 0px; padding: 0px;">
+	<div class="layui-row layui-col-space15">
+		<div class="layui-col-md12">
+			<div class="layui-col-md12">
+				<div class="layui-col-md12">
+					<div class="layui-card">
+						<div class="layui-card-body layui-row layui-col-space10">
+							<div class="layui-col-md6" style="display: flex;">
+								<input id="search_file" type="text" name="title" placeholder="请输入检索的文件名" autocomplete="off" class="layui-input">
+								<button id="search_file_btn" class="layui-btn">搜索</button>
+							</div>
+						</div>
+						<div class="layui-card-body table_div">
+							<h3 id="search_result"></h3>
+							<table id="myTable" name="info" class="layui-table" lay-size="lg">
+								<colgroup>
+									<col width="150">
+									<col width="200">
+									<col>
+								</colgroup>
+								<thead>
+								<tr>
+									<th>文件权限</th>
+									<th>创建者</th>
+									<th>文件大小</th>
+									<th>创建时间</th>
+									<th>块大小</th>
+									<th>文件名</th>
+									<th>操作
+										<button id="add_btn" style="margin-left:10px ;" class="layui-btn layui-btn-sm">创建文件夹<i class="layui-icon">&#xe654;</i></button>
+										<button id="add_file_btn" style="margin-left:10px ;" class="layui-btn layui-btn-sm">创建文件<i class="layui-icon">&#xe654;</i></button>
+									</th>
+								</tr>
+								</thead>
+								<tbody id="tableBody">
+								<!-- 表格主体 -->
+								</tbody>
+							</table>
+							<div style="display: flex;flex-direction: column;margin-left:20px; ">
+								<!--上传操作-->
+								<div class="layui-col-md4">
+									<input id="local_file_path"  type="text" name="title" placeholder="输入本地文件的全路径包括文件名" autocomplete="off" class="layui-input">
+								</div>
+								<div class="layui-col-md4">
+									<input id="target_file_path" type="text" name="title" placeholder="上传到Hadoop的文件名,默认上传到根目录的temporary文件夹中" autocomplete="off" class="layui-input">
+								</div>
+								<button id="upload_btn" style="margin:10px;width: 10%" class="layui-btn layui-btn-normal layui-btn-radius">上传</button>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<!--创建目录对话框-->
+			<div class="box_bg_add_folder">
+				<!-- 显示框-->
+				<div class="hint_box_add_folder">
+					<p style="margin-top: 20px;"><!-- <input class="username_input" type="text"/> -->
+						<input id="folder_name" type="text" name="title" placeholder="请输入文件夹名称" autocomplete="off" class="layui-input">
+					</p>
+					<p><button class="btn_public add_folder_ok">确定</button><button class="btn_public add_folder_clear">取消</button></p>
+				</div>
+			</div>
+			<!--创建文件对话框-->
+			<div class="box_bg_add_file">
+				<!-- 显示框-->
+				<div class="hint_box_add_file">
+					<p style="margin-top: 20px;"><!-- <input class="username_input" type="text"/> -->
+						<input id="add_file_title" type="text" name="title" placeholder="请输入文件名"
+							   autocomplete="off" class="layui-input file_title">
+					</p>
+					<div class="layui-card-body layui-row layui-col-space10">
+						<div class="layui-col-md12">
+							<textarea id="my_textArea_1" style="resize:none;" name="" placeholder="请输入" class="layui-textarea"></textarea>
+						</div>
+					</div>
+					<p><button class="btn_public add_file_ok">确定</button><button class="btn_public create_file_clear">取消</button></p>
+				</div>
+			</div>
+			<!-- 自定义输入弹框-->
+			<!-- 遮罩层-->
+			<div class="box_bg_3">
+				<!-- 显示框-->
+				<div class="hint_box_3">
+					<p style="margin-top: 20px;"><!-- <input class="username_input" type="text"/> -->
+						<input type="text" name="title" placeholder="请输入文件" autocomplete="off" class="layui-input">
+					</p>
+
+					<p><button class="btn_public">确定</button><button class="btn_public">取消</button></p>
+				</div>
+			</div>
+			<div class="box_bg_edit">
+				<!-- 显示框-->
+				<div class="hint_box_edit">
+					<p style="margin-top: 20px;"><!-- <input class="username_input" type="text"/> -->
+						<input id="file_title" type="text" name="title" placeholder="请输入文件名"
+							   autocomplete="off" class="layui-input file_title">
+					</p>
+					<div class="layui-card-body layui-row layui-col-space10">
+						<div class="layui-col-md12">
+							<textarea id="my_textArea" style="resize:none;" name="" placeholder="请输入" class="layui-textarea"></textarea>
+						</div>
+					</div>
+					<p><button class="btn_public change_filename change_filecontent">确定</button><button class="btn_public clear_btn_edit">取消</button></p>
+				</div>
+			</div>
+			<!-- 删除按钮弹框-->
+			<div class="box_bg_4">
+				<div class="hint_box_4">
+					<p><h3 align="center" style="font-family: '微软雅黑'; font-size: 18px;">确定删除吗?</h3></p>
+					<p><button class="btn_public del_ok">确定</button><button class="btn_public del_clear_btn">取消</button></p>
+				</div>
+			</div>
+			<script src="./js/jquery-1.7.1.min.js"></script>
+			<script>
+				/**上传功能
+				 * */
+				$(function(){
+					$("#add_file_btn").click(function(){
+						$(".box_bg_add_file").show();
+					});
+					$(".add_file_ok").click(function(){
+						$.ajax({
+							url:"createFile",
+							data:{
+								"createPath":parentfile,
+								"createFile":$("#add_file_title").val(),
+								"fileContent":$("#my_textArea_1").val(),
+							},success:function(){
+								$(".box_bg_add_file").hide();
+								window.location.reload();
+							}
+						});
+					});
+					$(".create_file_clear").click(function(){
+						$(".box_bg_add_file").hide();
+					});
+					$("#upload_btn").click(function(){
+								$.ajax({
+									url:"uploadFile",
+									data:{
+										"locationFilePath":$("#local_file_path").val(),
+										"targetFilePath":$("#target_file_path").val(),
+									},
+									success:function () {
+										alert("已上传成功");
+										window.location.reload();
+									}
+								});
+							}
+					);
+					/**添加文件夹功能
+					 * */
+					$("#add_btn").click(function(){
+						$(".box_bg_add_folder").show();
+					});
+					$(".add_folder_clear").click(function(){
+						$(".box_bg_add_folder").hide();
+					});
+					$(".add_folder_ok").click(function(){
+						$.ajax({
+							url:"createFolder",
+							data:{
+								"createFolder":$("#folder_name").val(),
+								"parentFolder":parentfile,
+							},success:function(){
+								window.location.reload();
+							}
+						});
+					});
+				});
+			</script>
+			<!--页面加载的时候触发一个ajax请求-->
+			<script>
+				var contentList=new Array();
+				var trSeq=0;
+				var oldName="";
+				var parentfile="";
+				if(parent.name!=""){
+					parentfile=parent.name+"/";
+				}
+				var delFileName="";
+				$(".clear_btn_edit").click(function(){
+					$(".box_bg_edit").hide();
+				});
+				$("#tableBody").on("click", "#a_Filename", function(event){
+					if(parent.name!=""){
+						parentfile=parent.name+"/";
+					}
+					parentfile+=$(this).closest("tr").find("td").eq(5).text()+"/";
+					console.log("当前路径:"+parentfile);
+					page_load(parentfile);
+				});
+				$("#tableBody").on("click", ".table_edit", function(event){
+					oldName=$(this).closest("tr").find("td").eq(5).text();
+					$(".file_title").val(oldName);
+					$(".box_bg_edit").show();
+					$("#my_textArea").show();
+					$(".hint_box_edit").css("height","260px");
+					if(contentList[trSeq]==null){
+						$("#my_textArea").hide();
+						$(".hint_box_edit").css("height","170px");
+					}
+					$("#my_textArea").val(contentList[trSeq]);
+					$("#tableBody >tr").mouseenter(function() {
+						trSeq = $(this).parent().find("tr").index($(this)[0]); //所获取的当前行的行号
+					});
+				});
+				$("#tableBody").on("click",".download_a",function(){
+					$.ajax({
+						url:"downFile",
+						data:{
+							"fileName":$(this).closest("tr").find("td").eq(5).text(),
+							"downPath":parentfile,
+						},success:function(){
+							alert("已下载,到E:\\");
+						}
+					});
+				});
+				$(".change_filename").click(function(){
+					$.ajax({
+						url:"changeFileName",
+						data:{
+							"oldName":oldName,
+							"newName":$("#file_title").val(),
+							"filePath":parentfile,
+							"fileContent":$("#my_textArea").val(),
+						},success:function(response){
+							if(response){
+								window.location.reload();
+							}else{
+								alert("更改失败");
+							}
+						},error:function(error){
+							alert(error);
+						}
+					});
+				});
+				$("#tableBody").on("click",".del_file_btn",function () {
+					$(".box_bg_4").show();
+					delFileName=$(this).closest("tr").find("td").eq(5).text();
+				});
+				$(".del_ok").click(function(){
+					$.ajax({
+						url:"delFile",
+						data:{
+							"delFilePath":parentfile,
+							"delFile":delFileName,
+						},success:function (response) {
+							$(".box_bg_4").hide();
+							window.location.reload();
+						},error:function(error){
+							alert(error);
+						}
+					});
+				});
+				$(".del_clear_btn").click(function(){
+					$(".box_bg_4").hide();
+				});
+				function page_load(filename) {
+					console.log("传到后端的路径: "+filename);
+					$.ajax({
+						url:"queryFileAll",
+						data:{
+							"fileName":filename,
+						},success:function(response){
+							$("#search_result").hide();
+							var html="";
+							for(var i=0;i<response.length;i++){
+								html+="<tr>";
+								html+="<td>"+response[i].filePermission+"</td>";
+								html+="<td>"+response[i].creator+"</td>";
+								html+="<td>"+response[i].fileSize+"</td>";
+								html+="<td>"+response[i].createTime+"</td>";
+								html+="<td>"+response[i].blockSize+"</td>";
+								if(response[i].content!=null){
+									html+="<td><span style='cursor: default'>"
+											+response[i].fileName+"</span></td>";
+								}else{
+									html+="<td><a href=\"#\" class=\"a_public a_filename\" id='a_Filename'>"
+											+response[i].fileName+"</a></td>";
+								}
+								html+="<td>";
+								html+="<button class=\"layui-btn table_edit\" ><i class=\"layui-icon\">&#xe642;</i></button>";
+								html+="<button class=\"layui-btn layui-btn-danger del_file_btn\" onclick=\"\"><i class=\"layui-icon\">&#xe640;</i></button>";
+								if(response[i].content!=null){
+									html+="<a href=\"#\" class=\"a_public download_a\" style=\"margin-left: 10px;\">下载</a>";
+								}
+								html+="</td>";
+								html+="</tr>";
+								contentList[i]=response[i].content;
+							}
+							$("#tableBody").html(html);
+						},error:function(error){
+							alert(error);
+						}
+					});
+				}
+			</script>
+			<script>
+				$(function(){
+					$("#search_file_btn").click(function(){
+						/**检索文件
+						 * */
+						var table_html="";
+						$.ajax({
+							url:"selectFile",
+							data:{
+								"queryFileName":$("#search_file").val(),
+							},success:function(response){
+								$("#search_result").show();
+								$("#search_result").text("检索结果:");
+								$("#myTable").empty();
+								table_html+="<colgroup>";
+								table_html+="<col width=\"150\">";
+								table_html+="<col width=\"200\">";
+								table_html+="<col>";
+								table_html+="</colgroup>";
+								table_html+="<thead>";
+								table_html+="<tr>";
+								table_html+="<th>文件名</th>";
+								table_html+="<th>文件路径</th>";
+								table_html+="</tr>";
+								table_html+="</thead>";
+								table_html+="<tbody id=\"tableBody_1\">";
+								for (var i=0;i<response.length;i++){
+									table_html+="<tr>";
+									table_html+="<td style='cursor: default'>"+response[i].fileName+"</td>";
+									table_html+="<td style='cursor: default'>"+response[i].filePath+"</td>";
+									table_html+="</tr>";
+								}
+								table_html+="</tbody>";
+								table_html+="</tbody>";
+								$("#myTable").html(table_html);
+							},error:function(error){
+								alert("检索失败");
+							}
+						});
+					});
+				});
+			</script>
+			<script src="./css/layui/layui.js"></script>
+			<script>
+				var uploadFileName="";
+				obj.preview(function(index, file, result){
+					uploadFileName=file;
+				});
+				layui.config({
+					base: './css/' //静态资源所在路径
+				}).extend({
+					index: 'lib/index' //主入口模块
+				}).use(['index']);
+			</script>
+			<script>
+				layui.config({
+					base: './css/' //静态资源所在路径
+				}).extend({
+					index: 'lib/index' //主入口模块
+				}).use(['index', 'upload'], function(){
+					var $ = layui.jquery
+							,upload = layui.upload;
+
+					//多文件列表示例
+					var demoListView = $('#test-upload-demoList')
+							,uploadListIns = upload.render({
+						elem: '#test-upload-testList'
+						,url: 'uploadFile'
+						,accept: 'file'
+						,multiple: true
+						,auto: false
+						,bindAction: '#test-upload-testListAction'
+						,choose: function(obj){
+							var files =obj.pushFile(); //将每次选择的文件追加到文件队列
+							//读取本地文件
+							obj.preview(function(index, file, result){
+								var tr = $(['<tr id="upload-'+ index +'">'
+									,'<td>'+ file.name +'</td>'
+									,'<td>'+ (file.size/1014).toFixed(1) +'kb</td>'
+									,'<td>等待上传</td>'
+									,'<td>'
+									,'<button class="layui-btn layui-btn-mini test-upload-demo-reload layui-hide">重传</button>'
+									,'<button class="layui-btn layui-btn-mini layui-btn-danger test-upload-demo-delete">删除</button>'
+									,'</td>'
+									,'</tr>'].join(''));
+
+								//单个重传
+								tr.find('.test-upload-demo-reload').on('click', function(){
+									obj.upload(index, file);
+								});
+
+								//删除
+								tr.find('.test-upload-demo-delete').on('click', function(){
+									delete files[index]; //删除对应的文件
+									tr.remove();
+									uploadListIns.config.elem.next()[0].value = ''; //清空 input file 值，以免删除后出现同名文件不可选
+								});
+								demoListView.append(tr);
+							});
+						}
+						,done: function(res, index, upload){
+							if(res.code == 0){ //上传成功
+								var tr = demoListView.find('tr#upload-'+ index)
+										,tds = tr.children();
+								tds.eq(2).html('<span style="color: #5FB878;">上传成功</span>');
+								tds.eq(3).html(''); //清空操作
+								return delete this.files[index]; //删除文件队列已经上传成功的文件
+							}
+							this.error(index, upload);
+						}
+						,error: function(index, upload){
+							var tr = demoListView.find('tr#upload-'+ index)
+									,tds = tr.children();
+							tds.eq(2).html('<span style="color: #FF5722;">上传失败</span>');
+							tds.eq(3).find('.test-upload-demo-reload').removeClass('layui-hide'); //显示重传
+						}
+					});
+				});
+			</script>
+</body>
+</html>

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.test.dao.MyDao">
+    <select id="UserLogin" resultType="com.example.test.entity.UserInfo" parameterType="java.lang.String">
+     select * from userInfo where name=#{username} and password=#{userpwd}
+    </select>
+    <insert id="UserRegister" parameterType="java.lang.String">
+        insert into userInfo(id,name,password,sex,type)
+         values(#{id},#{name},#{pwd},#{sex},#{userType})
+    </insert>
+    <select id="queryAllInfo" resultType="com.example.test.entity.UserInfo">
+        select *from userInfo
+    </select>
+    <delete id="delUser" parameterType="java.lang.String">
+        delete from userinfo where id=#{id}
+    </delete>
+    <update id="updateUserInfo" parameterType="java.lang.String">
+        update userinfo set sex=#{sex},type=#{type} where id=#{id}
+    </update>
+    <select id="queryUserById" parameterType="java.lang.String" resultType="com.example.test.entity.UserInfo">
+        select *from userinfo where id=#{id}
+    </select>
+</mapper>
